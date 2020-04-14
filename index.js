@@ -1,7 +1,8 @@
 let jsonvariants;
 
 /**
- * Respond with hello worker text
+ * Respond with one of the two variants depending on the visits the user makes
+ * Also changes the content of the HTML pages
  * @param {Request} request
  */
 async function handleRequest(request) {
@@ -22,6 +23,8 @@ async function handleRequest(request) {
     selected = cookie;
   } else {
     console.log("Cookie not found!");
+
+    //selecting a random based on A/B testing style
     selected = Math.random() < 0.5 ? jsonvariants[0] : jsonvariants[1];
   }
 
@@ -37,6 +40,7 @@ async function handleRequest(request) {
     .on('a', new HREFHandler())
     .transform(selectedVariantRes);
 
+  //setting the cookie if it does not exist
   if (!cookie) res.headers.append('Set-Cookie', `selected=${selected};`);
 
   return res;
@@ -68,25 +72,37 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 });
 
-
+/**
+ * Class to handle the changes in the Title
+ */
 class TitleHandler {
   element(element) {
     element.setInnerContent("Hey there!(Sample title)");
   }
 }
 
+/**
+ * Class to handle the changes in the H1 element
+ */
 class H1Handler {
   element(element) {
     element.setInnerContent("Hope you are doing well!");
   }
 }
 
+/**
+ * Class to handle the changes in the p element
+ */
 class PHandler {
   element(element) {
     element.setInnerContent("This is the sample variant paragraph.(Sample paragraph)");
   }
 }
 
+
+/**
+ * Class to handle the changes in the HREF of the anchor tag
+ */
 class HREFHandler {
   element(element) {
     element.setAttribute("href", "https://www.linkedin.com/in/floyed-pinto");

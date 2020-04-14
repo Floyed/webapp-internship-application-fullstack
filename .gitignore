@@ -353,3 +353,6 @@ MigrationBackup/
 .ionide/
 
 uploads/
+
+# ignoring wrangler data
+wrangler.toml

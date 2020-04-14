@@ -1,4 +1,4 @@
-name = "webapp"
+name = "variants"
 type = "javascript"
 account_id = ""
 workers_dev = true

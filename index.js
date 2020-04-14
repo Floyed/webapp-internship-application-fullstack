@@ -51,6 +51,7 @@ async function handleRequest(request) {
  * Grabs the cookie with name from the request headers
  * @param {Request} request incoming Request
  * @param {string} name of the cookie to grab
+ * Source : https://github.com/ashleygwilliams/template-registry/blob/master/templates/javascript/cookie_extract.js
  */
 function getCookie(request, name) {
   let result = null

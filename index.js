@@ -6,19 +6,16 @@ let jsonvariants;
  */
 async function handleRequest(request) {
 
-  let url = "https://cfw-takehome.developers.workers.dev/api/variants";
+  const response = await fetch("https://cfw-takehome.developers.workers.dev/api/variants"
+    , { method: 'GET' });
 
-  const response = await fetch(url, { method: 'GET' });
-
-  let data = response.json();
+  let data = await response.json();
 
   jsonvariants = data.variants;
 
-  let cookie = request.headers.get('cookie');
+  let cookie = getCookie(request,"selected");
 
   let selected;
-
-  let res = new HTMLRewriter();
 
   if (cookie) {
     console.log("Cookie found! :: " + cookie);
@@ -32,16 +29,39 @@ async function handleRequest(request) {
 
   const selectedVariantRes = await fetch(selected, { method: 'GET' });
 
+  let res = new HTMLRewriter();
+
   res = res.on('title', new TitleHandler())
     .on('h1', new H1Handler())
     .on('p', new PHandler())
     .on('a', new HREFHandler())
     .transform(selectedVariantRes);
 
-  if(!cookie) res.headers.append('Set-Cookie', `${selected};`);
+  if (!cookie) res.headers.append('Set-Cookie', `selected=${selected};`);
 
   return res;
 
+}
+
+/**
+ * Grabs the cookie with name from the request headers
+ * @param {Request} request incoming Request
+ * @param {string} name of the cookie to grab
+ */
+function getCookie(request, name) {
+  let result = null
+  let cookieString = request.headers.get('Cookie')
+  if (cookieString) {
+    let cookies = cookieString.split(';')
+    cookies.forEach(cookie => {
+      let cookieName = cookie.split('=')[0].trim()
+      if (cookieName === name) {
+        let cookieVal = cookie.split('=')[1]
+        result = cookieVal
+      }
+    })
+  }
+  return result
 }
 
 addEventListener('fetch', event => {

@@ -1,6 +1,6 @@
-name = "webapp"
+name = "variants"
 type = "javascript"
-account_id = "555ad6b53d209c29809c470bdb79ec5b"
+account_id = ""
 workers_dev = true
 route = ""
 zone_id = ""
